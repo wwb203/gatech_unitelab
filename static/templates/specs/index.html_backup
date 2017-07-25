@@ -1,0 +1,15 @@
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <h1>Equipment Category</h1>
+      <uib-accordion close-others="oneAtATime">
+        <div uib-accordion-group class="panel-default" heading="{{specs.name}}" ng-repeat="specs in vm.library" ng-click="vm.refreshSlider()">
+          <specs specs=specs></specs>
+          <div class="btn-group">
+            <md-button class="md-raised md-primary" ng-click="vm.search($index)">Search</button>
+          </div>
+        </div>
+      </uib-accordion>
+    </div>
+  </div>
+</body>

@@ -1,0 +1,41 @@
+<div ng-if="spec.paraType=='enum'">
+  <div class="form-group ng-cloak">
+    <label class="col-sm-6 control-label">{{spec.specName}}</label>
+    <div class="col-sm-6">
+      <div class="input-group">
+        <ui-select allow-clear 
+           ng-model="specSelection"
+          on-select="spec.paraId=specSelection.id;spec.disabled=false;vm.update()"
+          theme="bootstrap">
+          <ui-select-match 
+            placeholder="Leave blank to select all...">
+            {{$select.selected.name}}</ui-select-match>
+          <ui-select-choices repeat="item in vm.parameters">
+            <span ng-bind-html="item.name"></span>
+          </ui-select-choices>
+        </ui-select>
+        <span class="input-group-btn">
+          <button type="button"
+                  ng-click="spec.paraId=-1;spec.disabled=true;vm.update();specSelection=undefined" 
+            class="btn btn-default">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<div ng-if="spec.paraType=='numerical'">
+  <label class="col-sm-6 control-label">{{spec.specName}}</label>
+
+  <label>Disabled
+    <input 
+     type="checkbox" 
+     ng-model="spec.disabled"
+     ng-change="vm.update();disabled_slider.options.disabled=spec.disabled">
+  </label>
+  <rzslider 
+     rz-slider-model="spec.paraId"
+     rz-slider-options="disabled_slider.options">
+  </rzslider>
+</div>

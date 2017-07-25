@@ -1,0 +1,26 @@
+<md-dialog flex="100">
+    <md-dialog-content>
+        <h4>{{event.title}}</h4>
+        <div ng-hide="!im_user" layout="column">
+            <div>Manager:{{event.manager}}</div>
+            <jk-rating-stars rating="event.manager_rate" ></jk-rating-stars>
+            <div>{{event.equip}}</div>
+            <jk-rating-stars rating="event.equip_rate"></jk-rating-stars>
+            <md-input-container class="example-full-width">
+                <textarea mdInput placeholder="Note" ng-model="event.manager_note"></textarea>
+                </md-input-container>
+        </div>
+        <div ng-hide="im_user" layour="column">
+            <div>User:{{event.user}}</div>
+            <jk-rating-stars rating="event.user_rate" ></jk-rating-stars>
+            <md-input-container class="example-full-width">
+                <textarea mdInput placeholder="Note" ng-model="event.user_note"></textarea>
+                </md-input-container>
+
+        </div>
+        </md-diallog-content>
+        <md-dialog-actions layout="row">
+            <md-button  ng-click="cancel()">Cancel</md-button>
+            <md-button  class="md-primary" ng-click="rate(event)">Rate</md-button>
+            </md-dialog-actions>
+            </md-dialog>

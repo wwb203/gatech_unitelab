@@ -1,0 +1,27 @@
+{
+  "name": "angular-timepicker",
+  "version": "1.0.11",
+  "homepage": "https://github.com/Geta/angular-timepicker",
+  "authors": [
+    "Dzulqarnain Nasir (dzul@geta.no)"
+  ],
+  "description": "AngularJS Time Picker",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "main": [
+      "dist/angular-timepicker.js",
+      "dist/angular-timepicker.min.js",
+      "dist/angular-timepicker.min.js.map"
+  ],
+  "dependencies": {
+    "angular": "^1.6.4",
+    "angular-dateParser": "^1.1.0",
+    "angular-ui-bootstrap": "^2.5.0"
+  }
+}

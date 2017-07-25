@@ -1,0 +1,429 @@
+(function () {
+    'use strict';
+    angular
+        .module('thinkster.calendar.controllers')
+        .controller('CalendarCtrl', CalendarCtrl);
+    CalendarCtrl.$inject = ['$scope', '$compile','$timeout','uiCalendarConfig','CalService','ngDialog'];
+    function CalendarCtrl($scope, $compile, $timeout, uiCalendarConfig,CalService,ngDialog) {
+        var myName = 'wwb';
+        $scope.permission = 'manager';
+        var currentDevice = '5';
+        $scope.constraint = true;
+        $scope.Operation = 'Reserve inside green area';
+        $scope.ngDialog = ngDialog;
+        $scope.issharing = false;
+        $scope.userEvents = CalService.getUserCalendar();
+        $scope.deviceEvents = CalService.getDeviceCalendar();
+        $scope.events = [];
+        activate();
+        function activate() {
+            $scope.events = [];
+            $scope.events = $scope.userEvents;
+            for(let i = 0; i < $scope.deviceEvents.length; i++){
+                let exist = false;
+                for(let j = 0; j < $scope.userEvents.length; j++) {
+                    if($scope.deviceEvents[i].id == $scope.userEvents[j].id) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if(!exist) {
+                    $scope.events.push($scope.deviceEvents[i]);
+                }
+            }
+            if($scope.permission == 'rental') {
+                rentalStyle();
+            } else if($scope.permission == 'user') {
+                userStyle();
+            } else if($scope.permission == 'manager' && $scope.issharing == false){
+                managerStyle();
+            } else if($scope.permission == 'manager' && $scope.issharing == true) {
+                shareStyle();
+            }
+
+        };
+        function shareStyle() {
+            for(let i = 0; i < $scope.events.length; i++) {
+                if($scope.events[i].equipId==currentDevice) {
+                    if($scope.events[i].type == 'share' && $scope.events[i].manager != myName) {
+                        $scope.events[i]['rendering'] = 'background';
+                    }else if($scope.events[i].type == 'share' && $scope.events[i].manager == myName){
+                        console.log('manger'+$scope.events[i].manager);
+                            $scope.events[i]['color'] = 'green';
+                    } else if($scope.events[i].type == 'reserve' && $scope.events[i].user != myName) {
+                        $scope.events[i]['color'] = 'brown';
+                        $scope.events[i]['editable'] = false;
+                    } else {
+
+                    }
+                } else {// my other share and reservation
+                        $scope.events[i]['editable'] = false;
+                        $scope.events[i]['color'] = 'grey';
+                }
+            }
+        }
+
+        function rentalStyle() {
+            for(let i = 0; i < $scope.events.length; i++) {
+                if($scope.events[i].equipId==currentDevice) {
+                    if($scope.events[i].type == 'share') {
+                        $scope.events[i]['rendering'] = 'background';
+                    } else if($scope.events[i].type == 'reserve' && $scope.events[i].user != myName) {
+                        $scope.events[i]['color'] = 'brown';
+                        $scope.events[i]['editable'] = false;
+                    } else {
+
+                    }
+                } else {// my other share and reservation
+                        $scope.events[i]['editable'] = false;
+                        $scope.events[i]['color'] = 'pink';
+
+
+                }
+            }
+        }
+        function userStyle() {
+            for(let i = 0; i < $scope.events.length; i++) {
+                if($scope.events[i].equipId==currentDevice) {
+                    if($scope.events[i].type == 'share') {
+                        $scope.events[i]['rendering'] = 'background';
+                    } else if($scope.events[i].type == 'reserve' && $scope.events[i].user != myName) {
+                        $scope.events[i]['color'] = 'brown';
+                        $scope.events[i]['editable'] = false;
+                    } else {
+
+                    }
+                } else {// my other share and reservation
+                        $scope.events[i]['editable'] = false;
+                        $scope.events[i]['color'] = 'pink';
+
+
+                }
+            }
+        }
+        function managerStyle() {
+            for(let i = 0; i < $scope.events.length; i++) {
+                if($scope.events[i].equipId==currentDevice) {
+                    if($scope.events[i].type == 'share' && $scope.events[i].manager != myName) {
+                        $scope.events[i]['rendering'] = 'background';
+
+                    }else if($scope.events[i].type == 'share' && $scope.events[i].manager == myName){
+                        $scope.events[i]['color'] = 'grey';
+
+                    } else if($scope.events[i].type == 'reserve' && $scope.events[i].user != myName) {
+                        $scope.events[i]['color'] = 'brown';
+                        $scope.events[i]['editable'] = false;
+                    } else {
+
+                    }
+                } else {// my other share and reservation
+                        $scope.events[i]['editable'] = false;
+                        $scope.events[i]['color'] = 'blue';
+
+
+                }
+            }
+        }
+
+        $scope.toggleShare= function() {
+            console.log('toggleShare');
+            $scope.issharing = !$scope.issharing;
+            activate();
+            uiCalendarConfig.calendars.myCalendar1.fullCalendar('removeEvents');
+            uiCalendarConfig.calendars.myCalendar1.fullCalendar('renderEvents',$scope.events);
+            uiCalendarConfig.calendars.myCalendar1.fullCalendar('render');
+        }
+
+
+        $scope.ShowUpdateDialog = function () {
+            ngDialog.open({
+                template: '/static/templates/calendar/modal_update.html',
+                scope:$scope,
+                controller:"TimepickerCtrl",
+            });
+        };
+        $scope.ShowCreateDialog = function () {
+            ngDialog.open({
+                template: '/static/templates/calendar/modal_create.html',
+                scope:$scope,
+                controller:"TimepickerCtrl",
+            });
+        };
+
+        /* alert on eventClick */
+        $scope.toggleSelectionConstraint = function() {
+            $scope.constraint = !$scope.constraint;
+        }
+        $scope.updateEvent = function() {
+            uiCalendarConfig.calendars.myCalendar1.fullCalendar('updateEvent',$scope.event);
+            for(let i = 0; i < $scope.events.length; i++) {
+                if($scope.event.id == $scope.events[i].id) {
+                    $scope.events[i].start = $scope.event.start;
+                    $scope.events[i].end = $scope.event.end;
+                    break;
+                }
+            }
+            console.log($scope.events);
+        }
+        $scope.alertOnEventClick = function(event){
+            if($scope.permission == 'rental' && event.equipId != currentDevice) return;
+            if($scope.permission == 'user' && event.equipId != currentDevice) return;
+            $scope.event = event;
+            $scope.ShowUpdateDialog();
+        };
+        $scope.selectAllow = function(selectInfo) {
+            if($scope.permission == 'rental'){
+            return rentalSelectAllow(selectInfo.start.clone().local(), selectInfo.end.clone().local());
+            }
+            if($scope.permission == 'user') {
+                return userSelectAllow(selectInfo.start.clone().local(), selectInfo.end.clone().local());
+            }
+            return true;
+        }
+        $scope.eventAllow = function(selectInfo, dragEvent) {
+            if($scope.permission == 'rental'){
+                return rentalEventAllow(selectInfo.start.clone().local(), selectInfo.end.clone(), dragEvent);
+            }
+            if($scope.permission == 'user'){
+                return userEventAllow(selectInfo.start.clone().local(), selectInfo.end.clone(), dragEvent);
+            }
+
+            return true;
+        }
+        function findHost(start, end) {
+            for( let i = 0; i < $scope.events.length; i++ ) {
+                let event = $scope.events[i];
+                if(event.start <= start && end <= event.end) {
+                    return event;
+                }
+            }
+            console.log('host event not found');
+        }
+        function rentalEventAllow(start, end, dragEvent) {
+            let collision = false;
+            let allowed = false;
+            start.local();
+            end.local();
+            for(let i = 0; i < $scope.events.length; i++) {
+                let event = $scope.events[i];
+                if(event.id == dragEvent.id) continue;
+                if(event.type == 'share' && event.equipId == currentDevice) {
+                    if(event.start <= start
+                        && end <= event.end) {
+                        allowed = true;
+                        break;
+                    }
+                }
+            }
+            for(let i = 0; i < $scope.events.length; i++) {
+                let event = $scope.events[i];
+                if(event.id == dragEvent.id) continue;
+                if(event.type == 'reserve') {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                } else if(event.type == 'share' && event.manager == myName) {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                }
+            }
+            return (allowed == true && collision == false);
+        }
+        function userEventAllow(start, end, dragEvent) {
+            let collision = false;
+            start.local();
+            end.local();
+            for(let i = 0; i < $scope.events.length; i++) {
+                let event = $scope.events[i];
+                if(event.id == dragEvent.id) continue;
+                if(event.type == 'reserve') {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                } else if(event.type == 'share' && event.manager == myName) {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                }
+            }
+            return !collision;
+        }
+
+
+        function rentalSelectAllow(start, end) {
+            let collision = false;
+            let allowed = false;
+            start.local();
+            end.local();
+            for(let i = 0; i < $scope.events.length; i++) {
+                let event = $scope.events[i];
+                if(event.type == 'share' && event.equipId == currentDevice) {
+                    if(event.start <= start
+                        && end <= event.end) {
+                        allowed = true;
+                        break;
+                    }
+                }
+            }
+            for(let i = 0; i < $scope.events.length; i++) {
+                let event = $scope.events[i];
+                if(event.type == 'reserve') {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                } else if(event.type == 'share' && event.manager == myName) {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                }
+            }
+            return (allowed == true && collision == false);
+        }
+        function userSelectAllow(start, end) {
+            let collision = false;
+            start.local();
+            end.local();
+            for(let i = 0; i < $scope.events.length; i++) {
+                let event = $scope.events[i];
+                if(event.type == 'reserve') {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                } else if(event.type == 'share' && event.manager == myName) {
+                    if(!(event.end < start || event.start > end)){
+                        collision = true;
+                        break;
+                    }
+                }
+            }
+            return !collision;
+        }
+
+        /* alert on Drop */
+        $scope.alertOnDrop = function(event, delta, revertFunc, jsEvent, ui, view){
+            $scope.event = event;
+            $scope.updateEvent();
+        };
+        /* alert on Resize */
+        $scope.alertOnResize = function(event, delta, revertFunc, jsEvent, ui, view ){
+            $scope.event = event;
+            $scope.updateEvent(event);
+        };
+        $scope.alertOnselect =function (start, end, jsEvent, view){
+            $scope.event = {id:CalService.getNewEventId(),disabled:false,title:'newtitle',start:start, end:end};
+            if($scope.permission == 'rental'){
+                let hostEvent = findHost(start.clone().local(), end.clone().local());
+                $scope.event['manager'] = hostEvent.manager;
+                $scope.event['equipId'] = currentDevice;
+                $scope.event['user'] = myName;
+                $scope.event['type'] = 'reserve';
+                console.log(hostEvent);
+            }
+            if($scope.permission == 'user'){
+                $scope.event['manager'] = myName;
+                $scope.event['equipId'] = currentDevice;
+                $scope.event['user'] = myName;
+                $scope.event['type'] = 'reserve';
+            }
+            if($scope.permission == 'manager' && $scope.issharing == true) {
+                $scope.event['manager'] = myName;
+                $scope.event['equipId'] = currentDevice;
+                $scope.event['user'] = '';
+                $scope.event['type'] = 'share';
+
+            }
+            $scope.ShowCreateDialog();
+        };
+        /* add custom event*/
+        $scope.addEvent = function() {
+            //uiCalendarConfig.calendars.myCalendar1.fullCalendar('renderEvent',$scope.event);
+            $scope.events.push($scope.event);
+            console.log($scope.events);
+        };
+
+        /* remove event */
+        $scope.removeEvent = function() {
+            uiCalendarConfig.calendars.myCalendar1.fullCalendar('removeEvents', $scope.event._id);
+            for(let i = 0; i < $scope.events.length; i++) {
+                if($scope.event.id == $scope.events[i].id) {
+                    $scope.events.splice(i,1);
+                    break;
+                }
+            }
+            CalService.deleteEvent($scope.event);
+            console.log($scope.events);
+        };
+        /* Change View */
+        $scope.changeView = function(view,calendar) {
+            vm.custom
+            uiCalendarConfig.calendars[calendar].fullCalendar('changeView',view);
+            uiCalendarConfig.calendars[calendar].fullCalendar('render');
+        };
+        /* Change View */
+        $scope.renderCalendar = function(calendar) {
+            $timeout(function() {
+                if(uiCalendarConfig.calendars[calendar]){
+                    uiCalendarConfig.calendars[calendar].fullCalendar('render');
+                }
+            });
+        };
+        /* Render Tooltip */
+        $scope.eventRender = function( event, element, view ) {
+            element.attr({'tooltip': event.title,
+                'tooltip-append-to-body': true});
+            $compile(element)($scope);
+        };
+        /* config object */
+        let calendar_setup = {
+            defaultView: 'threeday',
+            //businessHours: {
+             //   start:'7:00',
+              //  end: '19:00',
+               // dow:[1,2,3,4,5]
+            //},
+            // weekends: false,
+            allDaySlot: false,
+            height: window.innerHeight*2/3,
+            editable: true,
+            scrollTime: '8:00:00',
+            views : {
+                threeday: {
+                    type:'agenda',
+                    //duration:{days:3},
+                    dayCount: 3,
+                    buttonText: '3 day',
+                    titleFormat: 'MM, DD'
+                }
+            },
+            header:{
+                left: 'prev',
+                center: 'today',
+                right: 'next'
+            },
+            dayClick: function( date, allDay, jsEvent, view ) {
+                console.log('test ok ');
+            },
+            timezone:'local',
+            eventClick: $scope.alertOnEventClick,
+            eventDrop: $scope.alertOnDrop,
+            eventResize: $scope.alertOnResize,
+            eventRender: $scope.eventRender,
+            selectable:true,
+            selectAllow:$scope.selectAllow,
+            eventAllow: $scope.eventAllow,
+            select:$scope.alertOnselect
+        };
+
+        $scope.uiConfig = {
+            calendar:calendar_setup};
+        $scope.eventSources = [$scope.events];
+    };
+})();

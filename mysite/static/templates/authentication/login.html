@@ -1,0 +1,22 @@
+<body class="md-body-1">
+<div class="container">
+    <img src="/static/picture/my_logo.png" class="img-responsive">
+</div>
+    <h3>Login</h3>
+    <hr>
+        <md-content  class="md-body-1" layout="column">
+    <form role="form" ng-submit="vm.login()">
+            <md-input-container class="md-block">
+                <label>Email</label>
+                <input type="email"  ng-model="vm.email" placeholder= " ex. john@gatech.edu" />
+                </md-input-container>
+                <md-input-container  class="md-block">
+                    <label for="login_password">Password</label>
+                    <input type="password"  ng-model="vm.password" placeholder=" ex. secretpwd" />
+                    </md-input-container>
+                    <div layout="row">
+                        <md-button type="submit" class="md-primary md-raised">Submit</md-button>
+                    </div>
+    </form>
+                    </md-content>
+</body>

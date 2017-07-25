@@ -1,0 +1,454 @@
+(function () {
+    'use strict';
+    angular
+        .module('thinkster.calendar.controllers')
+        .controller('IndexCalendarCtrl', IndexCalendarCtrl);
+    IndexCalendarCtrl.$inject = ['$scope', '$compile','$timeout','uiCalendarConfig','CalService','$mdDialog','Authentication','$interval','$location','$mdToast','$location'];
+    function IndexCalendarCtrl($scope, $compile, $timeout, uiCalendarConfig,CalService,$mdDialog,Authentication,$interval,$location,$mdToast,$location) {
+        var vm = this;
+        var myName = '';
+        $scope.has_access = false;
+        $interval(checkAccount, 500, 2);
+        var currentDevice = -1;
+        function checkAccount() {
+            var accountInfo = Authentication.getAccountInfo();
+            if(accountInfo) {
+            myName = accountInfo.username;
+                console.log(myName);
+            }
+        }
+
+        vm.month = false;
+        vm.currentView = '3Days';
+        vm.changeViewState = function() {
+            if(vm.month){
+                vm.changeView('month','myCalendar2');
+                vm.currentView = 'Month';
+            } else {
+                vm.changeView('agenda3Day','myCalendar2');
+                vm.currentView = '3Days';
+            }
+        }
+
+        vm.events = [];
+        activate();
+        var rawUserEvents = [];
+        function activate() {
+            CalService.getUserCalendar().then(SuccessFn, ErrorFn);
+            function SuccessFn(data){
+                let response = data.data;
+                if(response.status == 'Success') {
+                    rawUserEvents = response.Eventlist;
+                    removeDisabledEvents(rawUserEvents);
+                    vm.events = rawUserEvents;
+                    markupEvents(vm.events);
+                    $mdToast.show($mdToast.simple().textContent('Calendar Loaded'));
+                } else {
+                    $mdToast.show($mdToast.simple().textContent(response.message));
+                }
+            }
+            function ErrorFn(data) {
+                console.log('error when loading userCal');
+                $mdToast.show($mdToast.simple().textContent(data.error));
+            }
+        };
+        function markupEvents(events) {
+            for(let i = 0; i < vm.events.length; i++) {
+                let event = vm.events[i];
+                if(event.type == 'share') {
+                    if(event.manager == myName) {
+                        markupMyShare(vm.events[i]);
+                    } else {
+                        markupOtherShare(vm.events[i]);
+                    }
+                } else if(event.type == 'reserve') {
+                    if(event.manager == myName && event.user != myName) {
+                        markupMyManage(vm.events[i]);
+                    } else if(event.user == myName) {
+                        markupMyReserve(vm.events[i]);
+                    } else {
+                        markupOtherReserve(vm.events[i]);
+                    }
+                }
+            }
+        };
+        $scope.addEventFromDialog = function(event) {
+            markupMyReserve(event);
+            vm.events.push(event);
+            vm.renderCalender('myCalendar2');
+            $timeout(function (){updateToCal(event);},100);
+        }
+        $scope.updateEventFromDialog = function(event) {
+            for(let i = 0; i < vm.events.length; i++) {
+                if(event.id == vm.events[i].id){
+                    if(event.disabled) {
+                        vm.events.splice(i,1);
+                        vm.renderCalender('myCalendar2');
+                        return;
+                    }else {
+                        vm.events[i] = event;
+                    }
+                }
+            }
+            vm.renderCalender('myCalendar2');
+            $timeout(function (){updateToCal(event);},100);
+        }
+        vm.ShowViewDialog = function (event) {
+            $mdDialog.show({
+                controller:viewDialogController,
+                templateUrl:'/static/templates/layout/modal_view.html',
+                clickOutsideToClose:true,
+                locals: {
+                    event: event
+                }
+            }).then(function(event) {
+                console.log(event);
+                let meta = {equipID:event.equipID};
+                console.log('switching to calendar from index', event.equipID);
+                $location.url('/calendar');
+            },function() {console.log('dialog cancelled')});
+        };
+        function viewDialogController($scope, $mdDialog, event) {
+            $scope.event = event;
+            $scope.goto = function() {
+                $mdDialog.hide(event);
+            }
+            $scope.delete = function() {
+                event.disabled = true;
+                $mdDialog.hide(event);
+            }
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            }
+        }
+        vm.ShowFinishDialog = function (event) {
+            $mdDialog.show({
+                controller:finishDialogController,
+                templateUrl:'/static/templates/layout/modal_done.html',
+                clickOutsideToClose:true,
+                locals: {
+                    event: event
+                }
+            }).then(function(event) {
+                $scope.updateEventFromDialog(event);
+            },function() {console.log('dialog cancelled')});
+        };
+        function finishDialogController($scope, $mdDialog, event) {
+            $scope.event = event;
+            $scope.im_user = false;
+            if(event.user == myName) {
+                $scope.im_user = true;
+            }
+            $scope.rate = function() {
+                console.log(event);
+                $mdDialog.hide(event);
+            }
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            }
+        }
+
+        function removeDisabledEvents(events) {
+            for(let i = events.length - 1; i>=0; i--) {
+                if(events[i].disabled) {
+                    events.splice(i,1);
+                }
+            }
+        };
+        function markupMyShare(event) {
+            event['textColor'] = 'black';
+            event['color'] = '#7fDBFF';
+            event['editable'] = true;
+        };
+        function markupOtherShare(event) {
+            event['textColor'] = 'black';
+            event['editable'] = false;
+        };
+        function markupMyReserve(event) {
+            event['textColor'] = 'black';
+            event['editable'] = false;
+            event['color'] = '#39CCCC';
+        }
+        function markupOtherReserve(event) {
+            event['textColor'] = 'black';
+            event['editable'] = false;
+            event['color'] = 'FFDC00';
+        };
+        function markupMyManage(event) {
+            event['textColor'] = 'black';
+            event['color'] = 'FF851B';
+            event['editable'] = false;
+            let hostEvent = findHostEvent(event.start.clone().local(), event.end.clone().local());
+            if(hostEvent == undefined) return;
+            console.log('hostFound');
+            console.log(event);
+            if( !hostEvent.hasOwnProperty('guest')) {
+                hostEvent['guest'] = [];
+            }
+            hostEvent['guest'].push(event);
+        }
+
+        /* where to allow selection*/
+        vm.selectAllow = function(selectInfo) {
+            return false;
+        };
+        function findHostEvent(start, end) {
+            //within a share slots
+            start.add(5,'minutes');
+            end.subtract(5,'minutes');
+            for(let i = 0; i < vm.events.length; i++) {
+                let event = vm.events[i];
+                if(event.type == 'share') {
+                    if(start.isBetween(event.start, event.end,null, '[]')
+                        && end.isBetween(event.start, event.end, null ,'[]')){
+                        return event;
+                    }
+                }
+            }
+        }
+
+        vm.eventAllow = function(selectInfo, dragEvent) {
+            return shareEventAllow(selectInfo.start.clone().local(), selectInfo.end.clone().local(), dragEvent);
+        }
+        function shareEventAllow(start, end, dragEvent) {
+            //no collision with any reservation and share
+            //must cover myReservation beneath it
+            let collision = false;
+            let allow = true;
+            start.subtract(5,'minutes');
+            end.add(5,'minutes');
+
+            if(dragEvent.hasOwnProperty('guest')) {
+                for(let i = 0; i < dragEvent.guest.length;i++) {
+                    let guestEvent = dragEvent.guest[i];
+                    if(!(start.isBefore(guestEvent.start) && end.isAfter(guestEvent.end))) {
+                        allow = false;
+                    }
+                }
+            }
+            start.add(10,'minutes');
+            end.subtract(10,'minutes');
+
+            for(let i = 0; i < vm.events.length; i++) {
+                let event = vm.events[i];
+                if(event.id == dragEvent.id) continue;
+                let myGuest = false;
+                if(dragEvent.hasOwnProperty('guest')) {
+                    for(let j = 0; j < dragEvent.guest.length;j++) {
+                        if(dragEvent.guest[j].id == event.id) {
+                            console.log('myGuest');
+                            myGuest = true;
+                        }
+                    }
+                }
+                if(myGuest) continue;
+                if(!(event.end.isBefore(start) || event.start.isAfter(end))){
+                    collision = true;
+                    break;
+                }
+            }
+            return (allow == true && collision == false);
+        }
+
+        /* alert on dayClick */
+        vm.alertOnDayClick = function (date) {
+        };
+
+        /* alert on eventClick */
+        vm.alertOnEventClick = function (date, jsEvent, view) {
+            var now = moment();
+            if(date.start.isBefore(now) && date.type == 'reserve') {
+                vm.ShowFinishDialog(date);
+            } else {
+            vm.ShowViewDialog(date);
+            }
+        };
+        /* alert on Drop */
+        vm.alertOnDrop = function (event, delta, revertFunc, jsEvent, ui, view) {
+            updateFromCal(event);
+            vm.alertMessage = ('Event Dropped to make dayDelta ' + delta);
+        };
+        function updateFromCal(event){
+            for(let i = 0; i < vm.events.length; i++) {
+                if(event.id == vm.events[i].id) {
+                    vm.events[i].start = event.start;
+                    vm.events[i].end = event.end;
+                }
+            }
+        };
+        function updateToCal(event){
+            let events = getFullCalendarEvents();
+            console.log('updateToCal' + events.length);
+            for(let i = 0; i < events.length; i++) {
+                console.log('eventid'+event.id + 'caleventid' + events[i].id);
+                if(event.id == events[i].id) {
+                    console.log('find event in cal');
+                    events[i]['color'] = event.color;
+                    vm.updateEvents('myCalendar2', events);
+                    vm.renderCalender('myCalendar2');
+                }
+            }
+        };
+
+        /* alert on Resize */
+        vm.alertOnResize = function (event, delta, revertFunc, jsEvent, ui, view) {
+            updateFromCal(event);
+            vm.alertMessage = ('Event Resized to make dayDelta ' + delta);
+        };
+        /* add and removes an event source of choice */
+        vm.addRemoveEventSource = function (sources, source) {
+            var canAdd = 0;
+            angular.forEach(sources, function (value, key) {
+                if (sources[key] === source) {
+                    sources.splice(key, 1);
+                    canAdd = 1;
+                }
+            });
+            if (canAdd === 0) {
+                sources.push(source);
+            }
+        };
+        vm.actionOnSelect = function (start, end, jsEvent, view) {
+            $scope.selectStart = start.clone().local();
+            $scope.selectEnd = end.clone().local();
+            $scope.newEvent = {id:CalService.getNewEventId(), disabled:false, title:'', start:start.clone(), end:end.clone()};
+            if(vm.permission == 'rent') {
+                let hostEvent = findHostEvent(start.clone().local(), end.clone().local());
+                $scope.newEvent['manager'] = hostEvent.manager;
+                $scope.newEvent['equipID'] = currentDevice;
+                $scope.newEvent['user'] = myName;
+                $scope.newEvent['type'] = 'reserve';
+                $scope.newEvent['title'] = hostEvent.manager;
+                console.log(hostEvent);
+                vm.ShowCreateDialog();
+            }
+            if(vm.permission == 'use' || (vm.permission == 'manage' && vm.sharing == false)) {
+                $scope.newEvent['manager'] = myName;
+                $scope.newEvent['equipID'] = currentDevice;
+                $scope.newEvent['user'] = myName;
+                $scope.newEvent['type'] = 'reserve';
+                $scope.newEvent['title'] = myName + 'reserved';
+                vm.ShowCreateDialog();
+            }
+            if(vm.permission == 'manage' && vm.sharing == true) {
+                $scope.newEvent['manager'] = myName;
+                $scope.newEvent['equipID'] = currentDevice;
+                $scope.newEvent['user'] = '';
+                $scope.newEvent['type'] = 'reserve';
+                $scope.newEvent['title'] = myName +' sharing';
+                vm.ShowCreateDialog();
+            }
+
+        };
+        /* add custom event*/
+        vm.addEvent = function () {
+            vm.events.push({
+                title: vm.ev.title,
+                start: moment(vm.ev.from),
+                end: moment(vm.ev.to),
+                allDay: true,
+                className: ['openSesame']
+            });
+            vm.renderCalender('myCalendar2');
+        };
+        /* remove event */
+        /*vm.remove = function (index) {
+        vm.events.splice(index, 1);
+    };*/
+        /* Change View */
+        vm.changeView = function (view, calendar) {
+            uiCalendarConfig.calendars[calendar].fullCalendar('changeView', view);
+        };
+        /* Change View */
+        vm.renderCalender = function (calendar) {
+            $timeout(function () {
+                if (uiCalendarConfig.calendars[calendar]) {
+                    uiCalendarConfig.calendars[calendar].fullCalendar('render');
+                }
+            });
+        };
+        vm.updateEvent = function (calendar, event) {
+            $timeout(function () {
+                if (uiCalendarConfig.calendars[calendar]) {
+                    uiCalendarConfig.calendars[calendar].fullCalendar('updateEvent', event);
+                    uiCalendarConfig.calendars[calendar].fullCalendar('render');
+                }
+            });
+        };
+        vm.updateEvents = function (calendar, event) {
+            $timeout(function () {
+                if (uiCalendarConfig.calendars[calendar]) {
+                    uiCalendarConfig.calendars[calendar].fullCalendar('updateEvents', event);
+                    uiCalendarConfig.calendars[calendar].fullCalendar('render');
+                }
+            });
+        };
+
+        function getFullCalendarEvents() {
+            return uiCalendarConfig.calendars['myCalendar2'].fullCalendar('clientEvents');
+        }
+        vm.cleanupEventsFormat = function() {
+            let events = getFullCalendarEvents();
+            for(let i = 0; i < events.length; i++) {
+                events[i]['rendering'] = '';
+                events[i]['color'] = 'blue';
+                //vm.updateEvent('myCalendar2',events[i]);
+
+            }
+            vm.updateEvents('myCalendar2', events);
+            console.log(vm.events);
+        };
+        vm.action = function() {
+            vm.cleanupEventsFormat();
+        }
+
+        /* Render Tooltip */
+        vm.eventRender = function (event, element, view) {};
+        /* config object */
+        vm.uiConfig = {
+            calendar: {
+                defaultView: 'agenda3Day',
+                allDaySlot: false,
+                height: window.innerHeight*3/4,
+                scrollTime: '8:00:00',
+                editable: true,
+                selectable: false,
+                header: {
+                    left: 'prev',
+                    center: 'today',
+                    right: 'next'
+                },
+                nowIndicator: true,
+                timezone:'local',
+                views: {
+                    agenda3Day: {
+                        type:'agenda',
+                        dayCount: 3,
+                        buttonText: '3 day',
+                        titleFormat: 'MM, DD'
+                    }
+                },
+                dayClick: vm.alertOnDayClick,
+                eventClick: vm.alertOnEventClick,
+                eventDrop: vm.alertOnDrop,
+                eventResize: vm.alertOnResize,
+                eventRender: vm.eventRender,
+                selectAllow: vm.selectAllow,
+                eventAllow: vm.eventAllow,
+                select: vm.actionOnSelect,
+                businessHours: {
+                    start: '8:00', // a start time (10am in this example)
+                    end: '19:00', // an end time (6pm in this example)
+
+                    dow: [1, 2, 3, 4, 5 ,6 ,7]
+                    // days of week. an array of zero-based day of week integers (0=Sunday)
+                    // (Monday-Thursday in this example)
+                }
+            }
+        };
+
+        /* event sources array*/
+        vm.eventSources = [vm.events];
+    };
+
+})();

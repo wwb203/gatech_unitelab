@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" ng-app="demoApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Angular Timepicker Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCore.css">
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeDefault.css">
+
+
+    <style type="text/css">
+        .bs-example {
+            position: relative;
+            padding: 45px 15px 15px;
+            margin: 0 -15px 15px;
+            background-color: #fafafa;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, .05);
+            border-color: #e5e5e5 #eee #eee;
+            border-style: solid;
+            border-width: 1px 0;
+        }
+        
+        .bs-example:after {
+            content: "Example";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .highlight {
+            padding: 9px 14px;
+            margin-bottom: 14px;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            border-radius: 4px;
+        }
+        
+        .bs-example+.highlight {
+            margin: -15px -15px 15px;
+            border-radius: 0;
+            border-width: 0 0 1px;
+        }
+        
+        @media (min-width: 768px) {
+            .bs-example {
+                margin-left: 0;
+                margin-right: 0;
+                background-color: #fff;
+                border-width: 1px;
+                border-color: #ddd;
+                border-radius: 4px 4px 0 0;
+                box-shadow: none;
+            }
+            .bs-example+.highlight {
+                margin-top: -16px;
+                margin-left: 0;
+                margin-right: 0;
+                border-width: 1px;
+                border-bottom-left-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+        }
+        
+        .dn-timepicker-popup {
+            max-height: 300px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" ng-controller="demoCtrl">
+        <header class="page-header">
+            <h1>Angular Timepicker Directive <small>Demo</small></h1>
+        </header>
+
+        <p class="lead">This directive creates a simple dropdown style timepicker, like the one used in Google Calendar.</p>
+
+        <h3>Basic</h3>
+        <p>The minimum requirement to start using the time picker is to add the dn-timepicker directive as an attribute to an
+            input field, as well as specifying the model used using the ng-model attribute.</p>
+        <div class="bs-example">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="time1" class="col-sm-2 control-label">Select time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="time1" dn-timepicker ng-model="models.time1" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Selected time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-value="models.time1 | date:'h:mm a'" disabled />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="highlight" ng-non-bindable>
+            <pre class="brush: xml">&lt;input type="text" dn-timepicker ng-model="models.time" /&gt;</pre>
+        </div>
+
+        <h3>Range</h3>
+        <p>You can restrict input values to a predetermined range. The range values should follow the time format used.</p>
+        <div class="bs-example">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="time2" class="col-sm-2 control-label">Select time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="time2" dn-timepicker="h:mm a" ng-model="models.time2" min-time="9:00 am" max-time="5:00 pm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Selected time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-value="models.time2 | date:'h:mm a'" disabled />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="highlight" ng-non-bindable>
+            <pre class="brush: xml">&lt;input type="text" dn-timepicker="h:mm a" ng-model="models.time" min-time="9:00 am" max-time="5:00 pm" /&gt;</pre>
+        </div>
+
+        <h3>Dynamic Range & Format</h3>
+        <p>You can change the format and range on-the-fly, should you need it, and the directive will take care of updating
+            the view and the list.</p>
+        <div class="bs-example">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="time3" class="col-sm-2 control-label">Select time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="time3" dn-timepicker="{{models.format}}" ng-model="models.time3" min-time="{{models.minTime}}"
+                        max-time="{{models.maxTime}}" step="{{models.step}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Selected time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-value="models.time3 | date:'h:mm a'" disabled />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Format</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-model="models.format" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Min time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-model="models.minTime" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Max time</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-model="models.maxTime" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Step</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" ng-model="models.step" />
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="highlight" ng-non-bindable>
+            <pre class="brush: js">// Model
+$scope.models = {
+    time: new Date(),
+    format: 'h:mm a',
+    minTime: '9:00 am',
+    maxTime: '9:00 pm',
+    step: '15'
+};</pre>
+            <pre class="brush: xml">&lt;input type="text" dn-timepicker="{{models.format}}" ng-model="models.time" min-time="{{models.minTime}}" max-time="{{models.maxTime}}" step="{{models.step}}" /&gt;</pre>
+        </div>
+    </div>
+
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-ui-bootstrap/src/position/position.js"></script>
+    <script src="node_modules/angular-dateparser/dist/angular-dateparser.js"></script>
+    <script src="dist/angular-timepicker.js"></script>
+    <script>
+        angular.module('demoApp', ['dnTimepicker'])
+            .controller('demoCtrl', function($scope){
+                $scope.models = {
+                    time1: new Date(),
+                    time2: new Date(),
+                    time3: new Date(),
+                    format: 'h:mm a',
+                    minTime: '9:00 am',
+                    maxTime: '9:00 pm',
+                    step: '15'
+                };
+            });
+    </script>
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushXml.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.min.js"></script>
+    <script type="text/javascript">
+        SyntaxHighlighter.all();
+    </script>
+</body>
+
+</html>

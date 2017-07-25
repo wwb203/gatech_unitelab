@@ -1,0 +1,26 @@
+<md-dialog  class="container-fluid">
+    <md-dialog-content>
+        <div layout="column">
+            <md-input-container>
+                <h4>
+                <label>Event Title</label>
+                <input ng-model="event.title">
+                </h4>
+                </md-input-container>
+        </div>
+        <div layout="row">
+            <div class="col-xs-6"  style="text-align: center">
+                <h4>Start</h4>
+                <div uib-timepicker ng-model="event.start" ng-change="" hour-step="1" minute-step="30" show-meridian="true"></div>
+            </div>
+
+            <div class="col-xs-6" style="text-align: center">
+                <h4 style="text-align: center">End</h4>
+                <div uib-timepicker ng-model="event.end" ng-change="" hour-step="1" minute-step="30" show-meridian="true"></div>
+            </div>
+        </div>
+        </md-diallog-content>
+    <md-dialog-actions layour="row">
+                <md-button  ng-click="create(event)">Create</md-button>
+                </md-dialog-actions>
+</md-dialog>

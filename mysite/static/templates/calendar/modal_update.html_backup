@@ -1,0 +1,28 @@
+<div class="container">
+    <form class="form-horizontal" role="form">
+        <input  class="form-control col-xs-10" ng-model="event.title" 
+                                     placeholder="title"/>
+    </form>
+
+    <div class="row">
+        <div class="col-xs-6"  style="text-align: center">
+            <h4>Start</h4>
+            <div style="text-align: center" uib-timepicker ng-model="event.start" ng-change="changed()" hour-step="1" minute-step="30" show-meridian="true"></div>
+        <button type="button" class="btn btn-default" ng-click="update()">Update</button>
+        </div>
+
+        <div class="col-xs-6" style="text-align: center">
+            <!--pre class="alert alert-info">Time is: {{mytime | date:'shortTime' }}</pre-->
+            <h4 style="text-align: center">End</h4>
+            <div uib-timepicker ng-model="event.end" ng-change="changed()" hour-step="1" minute-step="30" show-meridian="true"></div>
+
+        <button type="button" class="btn btn-danger" ng-click="delete()">Delete</button>
+        </div>
+
+        <!--pre class="alert alert-info">Time is: {{mytime | date:'shortTime' }}</pre-->
+
+        
+    </div>
+<!--button type="button" class="btn btn-info" ng-click="toggleMode()">12H / 24H</button-->
+
+</div>

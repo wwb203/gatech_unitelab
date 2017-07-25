@@ -1,0 +1,190 @@
+md-toast {
+    position: fixed !important;
+}
+img.Image {max-width:100%;display:block;}
+.md-dialog-container{
+width: 100%;
+}
+.md-dialog-container md-dialog{
+max-width: 100%;
+}
+.example-full-width {
+  width: 100%;
+}
+
+.selectdemoSelectHeader {
+  /* Please note: All these selectors are only applied to children of elements with the 'selectdemoSelectHeader' class */ }
+  .selectdemoSelectHeader .demo-header-searchbox {
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+    padding: 0; }
+  .selectdemoSelectHeader .demo-select-header {
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
+    padding-left: 10.667px;
+    height: 48px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: auto; }
+  .selectdemoSelectHeader md-content._md {
+    max-height: 240px; }
+.md-body-1 {
+    font-size:16px;
+}
+.back-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
+.add-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.col-xs-12 {
+    padding-left:5px;
+    padding-right:5px;
+}
+.page-header{
+    padding-bottom: 5px;
+    margin: 10px 0 10px;
+}
+.rzslider{
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+td {word-wrap: break-word}
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.no-posts-here {
+  text-align: center;
+}
+.container {
+    width: 100%;
+    white-space: nowrap;
+}
+.post {}
+.post .post__meta {
+  font-weight: bold;
+  text-align: right;
+  padding-bottom: 19px;
+}
+.post .post__meta a:hover {
+  text-decoration: none;
+}
+.btn-add-new-post {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+.profile {}
+.profile .profile__header {
+  text-align:center;
+}
+.hero-unit {
+	position: relative;
+	padding: 40px 0;
+	color: #fff;
+	text-align: center;
+	text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+	background: #020031;
+	background: -moz-linear-gradient(45deg, #020031 0%, #6d3353 100%);
+	background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#020031), color-stop(100%,#6d3353));
+	background: -webkit-linear-gradient(45deg, #020031 0%,#6d3353 100%);
+	background: -o-linear-gradient(45deg, #020031 0%,#6d3353 100%);
+	background: -ms-linear-gradient(45deg, #020031 0%,#6d3353 100%);
+	background: linear-gradient(45deg, #020031 0%,#6d3353 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#020031', endColorstr='#6d3353',GradientType=1 );
+	-webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+	-moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+	box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-o-border-radius: 0;
+}
+.hero-unit .btn, .pagination-centered .btn {
+	float: none;
+	font-weight: normal;
+}
+.hero-unit p {
+	margin: 1em 0;
+}
+.bs-docs-social {
+	margin-top: 1em;
+	padding: 15px 0;
+	text-align: center;
+	background-color: rgba(245,245,245,0.3);
+	border-top: 1px solid rgba(255,255,255,0.3);
+	border-bottom: 1px solid rgba(221,221,221,0.3);
+}
+.bs-docs-social-buttons {
+	margin-left: 0;
+	margin-bottom: 0;
+	padding-left: 0;
+	list-style: none;
+}
+.bs-docs-social-buttons li {
+	display: inline-block;
+	padding: 5px 8px;
+	line-height: 1;
+}
+
+/* Allows .modal-backdrop to remain on the page without blocking */
+.modal-backdrop {
+	overflow: hidden;
+	height: 0;
+	-webkit-transition: opacity 0.15s linear, height 0 0.2s linear;
+	-moz-transition: opacity 0.15s linear, height 0 0.2s linear;
+	-ms-transition: opacity 0.15s linear, height 0 0.2s linear;
+	-o-transition: opacity 0.15s linear, height 0 0.2s linear;
+	transition: opacity 0.15s linear, height 0 0.2s linear;
+}
+.modal-backdrop.in {
+	height: 100%;
+	-webkit-transition: opacity 0.15s linear;
+	-moz-transition: opacity 0.15s linear;
+	-ms-transition: opacity 0.15s linear;
+	-o-transition: opacity 0.15s linear;
+	transition: opacity 0.15s linear;
+}
+
+/*** Calendar ***/
+
+.calAlert{
+	width: 595px; float: right; margin-bottom: 5px;
+}
+
+.calXBtn{
+	float: right; margin-top: -5px; margin-right: -5px;
+}
+
+.calWell{
+	float: left; margin-bottom: 40px;
+}
+
+.fc-event.openSesame .fc-event-skin{
+	background-color: rgb(229, 229, 11);
+	color: black;
+}
+
+.fc-event.customFeed .fc-event-skin{
+	background-color: rgb(132, 222, 175);
+	color: black;
+}
+
+.calTools{
+	margin-bottom: 10px;
+}
+.btn-search {
+    padding: 14px 24px;
+    top:5px;
+    buttom:5px;
+    border: 0 none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}

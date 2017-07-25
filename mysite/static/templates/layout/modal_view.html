@@ -1,0 +1,31 @@
+<md-dialog flex="100">
+    <md-dialog-content>
+        <div layout="column">
+                <h4>{{event.title}}</h4>
+                <table class="table table-striped">
+                <tbody>
+                 <tr> <td>Title</td><td>{{event.title}}</td></tr>
+                <tr> <td>Type</td><td>{{event.type}}</td></tr>
+
+                <tr> <td>User</td><td>{{event.user}}</td></tr>
+                <tr ng-if="event.user_rate>=0"> <td>Rate</td><td>{{event.user_rate}}</td></tr>
+                <tr ng-if="event.user_rate>=0"> <td>Note</td><td>{{event.user_note}}</td></tr>
+
+                <tr> <td>Manager</td><td>{{event.manager}}</td></tr>
+                <tr ng-if="event.manager_rate>=0"> <td>Rate</td><td>{{event.manager_rate}}</td></tr>
+                <tr ng-if="event.manager_rate>=0"> <td>Note</td><td>{{event.manager_note}}</td></tr>
+                <tr> <td>Device</td><td>{{event.equip}}</td></tr>
+                <tr ng-if="event.equip_rate>=0"> <td>Rate</td><td>{{event.equip_rate}}</td></tr>
+
+                <tr> <td>Location</td><td>{{event.location}}</td></tr>
+                <tr> <td>Start</td><td>{{event.start.format("MMM Do, h:mm a")}}</td></tr>
+                <tr> <td>End</td><td>{{event.end.format("MMM Do, h:mm a")}}</td></tr>
+                </tbody>
+                </table>
+        </div>
+        </md-dialog-content>
+    <md-dialog-actions layour="row">
+                <md-button  ng-click="cancel()">Cancel</md-button>
+                <md-button  ng-click="goto(event)">Device Calendar</md-button>
+                </md-dialog-actions>
+</md-dialog>

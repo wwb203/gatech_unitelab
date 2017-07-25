@@ -1,0 +1,31 @@
+<md-content ng-controller="CalendarCtrl as vm" class="ng-cloak">
+    <div  class="container">
+        <section id="directives-calendar">
+            <div class="page-header">
+                <h4>{{vm.operation}}</h4>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="btn-toolbar">
+                        <div ng-hide="vm.permission != 'manage'" class="pull-left">
+                            <md-switch ng-model="vm.sharing" ng-change="vm.changeShareState()" class="pull-left">
+                                {{vm.reserveOrShare}}
+                                </md-switch>
+                        </div>
+                        <div class="pull-right">
+                            <md-switch ng-model="vm.month" ng-change="vm.changeViewState()">
+                                {{vm.currentView}}
+                                </md-switch>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="vm.showCal" class="calendar" ng-model="vm.eventSources" calendar="myCalendar1" ui-calendar="vm.uiConfig.calendar"></div>
+            </div>
+<md-button class="md-fab-buttom-left md-fab md-primary back-button" ng-click="vm.back()">
+    <md-icon class="material-icons md-light md-48">navigate_before</md-icon>
+  </md-button>
+    </div>
+        </section>
+        </div>
+        </md-content>
+

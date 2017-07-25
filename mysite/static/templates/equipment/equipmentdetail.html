@@ -1,0 +1,39 @@
+<div class="container ng-cloak">
+  <div class="row">
+    <img  width="100%" src={{vm.equip.imgurl}}>
+      <div class="caption">
+    <table class="table table-bordered table-striped">
+      <tbody>
+        <tr>
+          <td>Brand</td>
+          <td>{{vm.equip.brand}}</td>
+        </tr>
+        <tr>
+          <tr>
+            <td>Group</td>
+            <td>{{vm.equip.lab}}</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td>{{vm.equip.location}}</td>
+          </tr>
+            <td>Description</td>
+            <td>{{vm.equip.description}}</td>
+          </tr>
+          <tr>
+            <td>Link</td>
+            <td>
+              <a ng-href="" ng-click="vm.redirectToManu()">Manufacture</a>
+            </td>
+          </tr>
+           
+      </tbody>
+    </table>
+    <md-button  class="md-raised md-primary pull-right" ng-click="vm.calendar()">Select</md-button>
+  </div>
+  <md-button class="md-fab-buttom-left md-fab md-primary back-button" ng-click="vm.back()">
+    <md-icon class="material-icons md-light md-48">navigate_before</md-icon>
+  </md-button>
+
+</div> 
+

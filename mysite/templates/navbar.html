@@ -1,0 +1,39 @@
+  <nav class="narbar navbar-default navbar-static-top" role="navigation" ng-controller="NavbarController as vm">
+    <div class="container md-body-1">
+      <div class="navbar-header">
+        <button type="button"
+                class="navbar-toggle collapsed" 
+                data-toggle="collapse"
+                data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        {% if user.has_access or user.is_boss %}
+        <a class="navbar-brand" href="/myCalendar">United Lab of Gatech</a>
+        {% else %}
+        <a class="navbar-brand" href="/">United Lab of Gatech</a>
+        {% endif %}
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          {% if user.is_authenticated %}
+          <li><a data-target="collapse" data-target=".in" href="javascript:void(0)">+{{user.username}}</a></li>
+          {% if user.has_access or user.is_boss %}
+          <li><a data-toggle="collapse" data-target=".in" href="/mylabequiplist">MyLab</a></li>
+          <li><a data-toggle="collapse" data-target=".in" href="/specs">Rent Device</a></li>
+          {% endif %}
+          {%if user.is_boss %}
+          <li><a data-toggle="collapse" data-target=".in" href="/manage">Lab Management</a></li>
+          {% endif %}
+          <li><a data-toggle="collapse" data-target=".in" href="/+{{ user.username }}/settings">Settings</a></li>
+          <li><a data-toggle="collapse" data-target=".in" href="javascript:void(0)" ng-click="vm.logout()">Logout</a></li>
+          {% else %}
+          <li><a data-toggle="collapse" data-target=".in" href="/login">Login</a></li>
+          <li><a data-toggle="collapse" data-target=".in" href="/register">Register</a></li>
+          {% endif %}
+        </ul>
+      </div> <!-- /.collapse.navbar-collapse -->
+    </div>
+  </nav>

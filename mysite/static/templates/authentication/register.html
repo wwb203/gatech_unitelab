@@ -1,0 +1,29 @@
+<div class="container">
+<img src="/static/picture/my_logo.png" class="img-responsive">
+    <h1>Register</h1>
+    <md-content  class="row">
+      <form role="form" ng-submit="vm.register()">
+          <md-input-container  class="md-block">
+          <label >Email</label>
+          <input type="email" 
+                                                   ng-model="vm.email"
+                                                   placeholder="ex. john@gatech.edu"/>
+          </md-input-container>
+          <md-input-container  class="md-block">
+          <label >Username</label>
+          <input type="text" 
+                                                   ng-model="vm.username"
+                                                   placeholder="ex. john"/>
+          </md-input-container>
+          <md-input-container class="md-block">
+          <label>Password</label>
+          <input type="password" 
+                                                   ng-model="vm.password"
+                                                   placeholder="ex. secretpwd"/>
+          </md-input-container>
+          <div layout="column">
+          <md-button type="submit" class="md-primary md-raised">Submit</md-button>
+          </div>
+      </form>
+      </md-content>
+

@@ -1,0 +1,37 @@
+<body class="ng-cloak">
+        <h1>My Devices</h1>
+        <div ng-if="vm.equipList.length==0">
+                <div layout="row" layout-sm="column" layout-align="space-around">
+      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+        </div>
+        <md-content class="md-padding" layout-xs="column" layout="column">
+            <div ng-repeat="equip in vm.equipList">
+                <md-card> 
+                    <table class="table table-bordered table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td>{{equip.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>Model</td>
+                                <td>{{equip.brand}}, {{equip.model}}</td>
+                            </tr>
+                            <tr>
+                                <td>Location</td>
+                                <td>{{equip.location}}</td>
+                        </tbody>
+                    </table>
+                    <md-card-actions>
+                        <md-button class="pull-right md-primary" ng-click="vm.select(equip)">Select</md-button>
+                        </md-card-actions>
+                        </md-card>
+            </div>
+            </md-content>
+
+</body>
+    <md-button class="md-fab-buttom-left md-fab md-primary back-button" ng-click="vm.back()">
+        <md-icon class="material-icons md-light md-48">navigate_before</md-icon>
+        </md-button>
+

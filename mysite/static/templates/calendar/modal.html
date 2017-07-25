@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6"  style="text-align: center">
+            <h4>StartSanjie</h4>
+            <div uib-timepicker ng-model="event.start" ng-change="changed()" hour-step="1" minute-step="30" show-meridian="false"></div>
+        <button type="button" class="btn btn-default" ng-click="update()">Confirm</button>
+        </div>
+
+        <div class="col-xs-6" style="text-align: center">
+            <!--pre class="alert alert-info">Time is: {{mytime | date:'shortTime' }}</pre-->
+            <h4 style="text-align: center">End</h4>
+            <div uib-timepicker ng-model="event.end" ng-change="changed()" hour-step="1" minute-step="30" show-meridian="false"></div>
+
+        <button type="button" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+        </div>
+
+        <!--pre class="alert alert-info">Time is: {{mytime | date:'shortTime' }}</pre-->
+
+        
+    </div>
+<!--button type="button" class="btn btn-info" ng-click="toggleMode()">12H / 24H</button-->
+
+</div>

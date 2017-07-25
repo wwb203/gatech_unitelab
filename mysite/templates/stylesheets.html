@@ -1,0 +1,19 @@
+{% load compress %}
+{% load staticfiles %}
+
+{% compress css %}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.4/angular-material.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/ngDialog/css/ngDialog.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/ngDialog/css/ngDialog-theme-default.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/star/jk-rating-stars.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'stylesheets/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/angular-ui-select/dist/select.css'%}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2-bootstrap.css">
+<link href="//rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'stylesheets/styles.css' %}">
+{% endcompress %}

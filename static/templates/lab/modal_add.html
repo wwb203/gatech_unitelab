@@ -1,0 +1,29 @@
+<md-dialog  class="md-body-1">
+    <md-dialog-content layout="column">
+        <h4>Add a Member</h4>
+        <div layout="row">
+        <md-input-container>
+            <label>Email</label>
+            <input ng-model="item.email" placeholder="student@gatech.edu" type="email">
+            </md-input-container>
+        <md-input-container>
+            <label>Username</label>
+            <input ng-model="item.username" placeholder="username">
+            </md-input-container>
+
+        </div>
+        <h4>Add a Device</h4>
+        <md-input-container>
+            <label>Location</label>
+            <input ng-model="item.deviceLocation" class="example-full-width" placeholder="Building, Room Number">
+        </md-input-container>
+        <md-input-container>
+            <label>Link</label>
+            <input ng-model="item.device" class="example-full-width" placeholder="url from manufacture">
+        </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+            <md-button  ng-click="cancel()">Cancel</md-button>
+            <md-button  class="md-primary" ng-click="add(item)">Add</md-button>
+    </md-dialog-actions>
+</md-dialog>

@@ -1,0 +1,40 @@
+<div ng-if="spec.paraType=='enum'">
+    <div class="form-group ng-cloak">
+        <label class="col-sm-6 control-label">{{spec.specName}}</label>
+        <div class="col-sm-6">
+            <div class="input-group">
+                <ui-select allow-clear 
+                 ng-model="vm.selectedParameter"
+                 ng-change="spec.paraId=vm.selectedParameter.id;spec.disabled=false;vm.update();$spec.selection=vm.selectedParameter"
+                 theme="bootstrap">
+                    <ui-select-match>
+                        {{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="item in vm.parameters">
+                        <span ng-bind-html="item.name"></span>
+                        </ui-select-choices>
+                        </ui-select>
+
+                        <span class="input-group-btn">
+                            <button type="button"
+                                    ng-click="vm.selectedParameter=undefined;spec.paraId='Any';spec.disabled=true;vm.update()" 
+                                    class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-if="spec.paraType=='numerical'" ng-init="vm.update()">
+    <label class="col-sm-6 control-label">{{spec.specName}}</label>
+
+    <md-slider-container ng-disabled="spec.disabled">
+        <span> </span>
+        <md-slider flex min="{{minValue}}" max="{{maxValue}}" ng-model="spec.paraId" aria-label="blue" id="blue-slider">
+            </md-slider>
+            <md-input-container>
+                <input flex type="number" ng-model="spec.paraId" aria-label="blue" aria-controls="blue-slider">
+                </md-input-container>
+                </md-slider-container>
+                <md-checkbox ng-model="spec.disabled">Disabled</md-checkbox>
+</div>

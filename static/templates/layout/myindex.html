@@ -1,0 +1,22 @@
+<md-content ng-controller="IndexCalendarCtrl as vm" class="ng-cloak">
+    <div  class="container">
+        <section id="directives-calendar">
+            <div class="page-header">
+                <h4>My Calendar</h4>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="btn-toolbar">
+                        <div class="pull-right">
+                            <md-switch ng-model="vm.month" ng-change="vm.changeViewState()">
+                                {{vm.currentView}}
+                                </md-switch>
+                        </div>
+                    </div>
+                </div>
+                <div class="calendar" ng-model="vm.eventSources" calendar="myCalendar2" ui-calendar="vm.uiConfig.calendar"></div>
+            </div>
+        </section>
+        </div>
+        </md-content>
+

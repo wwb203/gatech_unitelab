@@ -1,0 +1,82 @@
+<div layout="column" class="ng-cloak" ng-controller="LabIndexController as vm">
+    <body layout="column">
+        <h3>Lab Management</h3>
+        <md-content class="md-padding" layout-xs="column">
+            <div ng-hide="vm.pendingList.length == 0">
+                <h4> Requests</h4>
+                <div ng-repeat="person in vm.pendingList">
+                    <md-card>
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">{{person.firstName}}  {{person.lastName}}</span>
+                                <span class="md-subhead">{{person.email}}</span>
+                                </md-card-title-text>
+                                </md-card-title>
+                                <md-card-actions layout="row" layout-align="end center">
+                                    <md-button ng-click="vm.accept($index)">Accept</md-button>
+                                    <md-button ng-click="vm.decline($index)">Decline</md-button>
+                                    </md-card-actions>
+                                    </md-card>
+                </div>
+            </div>
+        <h4>Remove Member</h4>
+        <md-input-container>
+            <label>Remove Member</label>
+            <md-select ng-model="personToRemove"
+                md-on-close="clearSearchTerm()"
+                data-md-container-class="selectdemoSelectHeader"
+                >
+                <md-select-header class="demo-select-header">
+                    <input ng-model="searchTerm"
+                        type="search"
+                        placeholder="Search for a member.."
+                        class="demo-header-searchbox md-text">
+                    </md-select-header>
+                    <md-optgroup label="member.lastName">
+                        <md-option ng-value="member" ng-repeat="member in vm.memberList |
+                            filter:searchTerm">{{member.fullName}}</md-option>
+                     </md-optgroup>
+            </md-select>
+        </md-input-container>
+        <div layout="row" layout-align="end" flex>
+        <md-button ng-click="personToRemove={}">Clear</md-button>
+        <md-button ng-click="vm.remove()" class="md-warn">Remove</md-button>
+        </div>
+        <h4>Equipment Management </h4>
+        <div ng-repeat="equip in vm.equipList" nop>
+
+        <div class=".md-body-2">{{equip.name}}:{{equip.brand}} {{equip.model}}</div>
+        <md-input-container>
+            <md-select ng-model="vm.manageList[$index]"
+                md-on-close="clearEquipSearch(equip)"
+                data-md-container-class="selectdemoSelectHeader"
+                multiple
+                >
+                <md-select-header class="demo-select-header">
+                    <input ng-model="equip.searchTerm"
+                        type="search"
+                        placeholder="Search for a member.."
+                        class="demo-header-searchbox md-text">
+                    </md-select-header>
+                    <md-optgroup label="member.lastName">
+                        <md-option ng-selected="isManager(member,equip.managerList)" ng-value="member" ng-repeat="member in vm.memberList |
+                            filter:equip.searchTerm">{{member.fullName}}</md-option>
+                     </md-optgroup>
+            </md-select>
+        </md-input-container>
+
+        </div>
+        <div layout="row" layout-align="end" flex>
+        <md-button ng-click="update()" class="md-warn">Update</md-button>
+        </div>
+<br>
+<br>
+<br>
+<br>
+    <md-button class="md-fab-buttom-right md-fab md-primary add-button" ng-click="vm.ShowAddDialog()">
+    <md-icon class="material-icons md-light md-48">add</md-icon>
+  </md-button>
+        </md-content>
+    </body>
+
+</div>
